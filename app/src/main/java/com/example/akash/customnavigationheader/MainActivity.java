@@ -1,8 +1,6 @@
 package com.example.akash.customnavigationheader;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,12 +8,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     CustomView customView;
+    LinearLayout headercontent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
+        headercontent = (LinearLayout) header.findViewById(R.id.headercontent);
+//        headercontent.animate().y(0);
+        headercontent.setAlpha(0);
         customView = (CustomView) header.findViewById(R.id.customview);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -32,17 +35,22 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
+//          Passing slideOffset value to rotateRect() method for rotation of rectangles in custom view
                 customView.rotateRect(slideOffset);
+                headercontent.animate().alpha(slideOffset);
+                headercontent.animate().yBy(slideOffset);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
 
+                headercontent.animate().y(150);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-
+                headercontent.setAlpha(0);
+                headercontent.animate().y(0);
             }
 
             @Override
